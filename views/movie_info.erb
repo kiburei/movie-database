@@ -1,0 +1,35 @@
+<h1><%= @movie.name() %></h1>
+
+  <h3>Select all actors who starred in this movie:</h3>
+
+  <% if @actors.any?() %>
+    <form action="/movies/<%= @movie.id %>" method="post">
+      <input type="hidden" name="_method" value="patch">
+      <% @actors.each() do |actor| %>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="actor_ids[]" value="<%= actor.id() %>"><%= actor.name() %>
+          </label>
+        </div>
+      <% end %>
+
+      <button type="submit">Add actors</button>
+    </form>
+  <% end %>
+
+  <% if @movie.actors().any?() %>
+
+    <h3>Here are all the actors in this movie:</h3>
+
+    <ul>
+      <% @movie.actors().each() do |actor| %>
+        <li><%= actor.name() %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>There are no actors yet! <a href="/actors">Add actors here</a></p>
+  <% end %>
+
+
+  <a href="/">Return to Main Page</a>
+  

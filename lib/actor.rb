@@ -1,9 +1,10 @@
 class Actor
-  attr_accessor(:name, :id)
+  attr_accessor(:name, :id, :movie_ids)
 
   def initialize(attributes)
     @name = attributes.fetch(:name)
     @id = attributes.fetch(:id).to_i
+    @movie_ids = []
   end
 
   def self.all
@@ -39,7 +40,19 @@ class Actor
     DB.exec("UPDATE actors SET name = '#{@name}' WHERE id = #{@id}")
   end
 
+  def movies
+    movies = DB.exec("SELECT movie_id FROM actors_movies WHERE actor_id = #{self.id};")
+    actor_movies = []
+    movies.each() do |movie|
+      movie_id = movie.fetch("movie_id").to_i()
+      my_movie = DB.exec("SELECT * FROM movies WHERE id = #{movie_id};")
+      actor_movies.push(Movie.new(:name =>  my_movie.first().fetch('name'), :id => movie_id ))
+    end
+    actor_movies
+  end
+
   def delete
+    DB.exec("DELETE FROM actors_movies WHERE actor_id = #{self.id};")
     DB.exec("DELETE FROM actors WHERE id = #{self.id}")
   end
 end

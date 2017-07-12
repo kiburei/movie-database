@@ -1,5 +1,6 @@
 require "rspec"
 require "movie"
+require "actor"
 require "pg"
 
 DB = PG.connect({:dbname => 'movie_database_test'})
@@ -7,6 +8,7 @@ DB = PG.connect({:dbname => 'movie_database_test'})
 RSpec.configure do |config|
   config.after(:each) do
     DB.exec('DELETE FROM movies *;')
+    DB.exec('DELETE FROM actors_movies *')
   end
 end
 
@@ -40,9 +42,13 @@ end
     describe("#update") do
       it("lets you update movies in the database") do
         movie = Movie.new({:name => "Oceans Eleven", :id => nil})
+        actor = Actor.new({:name => "Rami Malek", :id => nil})
+        actor1 = Actor.new({:name => "Brad Pitt", :id => nil})
         movie.save()
-        movie.update({:name => "Oceans Twelve"})
-        expect(movie.name()).to(eq("Oceans Twelve"))
+        actor.save()
+        actor1.save()
+        movie.update({:actor_ids => [actor.id, actor1.id]})
+        expect(movie.actors()).to(eq([actor,actor1]))
       end
     end
 

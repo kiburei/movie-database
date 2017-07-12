@@ -1,0 +1,27 @@
+<h1>Welcome to the Actor page</h1>
+
+  <p>Add an actor to the database:</p>
+
+  <form action="/actors" method="post">
+    <label for="name">Actor's name:</label>
+    <input id="name" name="name" type="text">
+
+    <button type="submit">Add actor</button>
+  </form>
+
+
+  <% if @actors.any?() %>
+    <p>Click on an actor to see information about them and to assign them to different movies:</p>
+
+    <ul>
+      <% @actors.each do |actor| %>
+        <li><a href="/actors/<%= actor.id() %>"><%= actor.name() %></a></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>There are no actors added yet!</p>
+  <% end %>
+
+  <p><a href="/movies">See all movies</a></p>
+
+  <p><a href="/">Return to Main Page</a></p>
